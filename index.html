@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You ❤️</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&family=Sacramento&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, #ffe6ef, #dff4ff);
+            color: #8b5570;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card {
+            width: min(90%, 500px);
+            text-align: center;
+            background: #ffffffaa;
+            padding: 35px;
+            border-radius: 30px;
+            box-shadow: 0 15px 40px #d99bb855;
+            backdrop-filter: blur(10px);
+            position: relative;
+        }
+
+        h1 {
+            font-family: 'Sacramento', cursive;
+            font-size: 55px;
+            margin: 0 0 20px;
+            color: #e99ab7;
+        }
+
+        button {
+            border: 2px solid #efaac5;
+            background: white;
+            color: #d77d9d;
+            border-radius: 30px;
+            padding: 12px 35px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background: #ffe6ef;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .heart {
+            font-size: 45px;
+            animation: float 2s infinite;
+        }
+
+        @keyframes float {
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+
+        /* GAME MEMORY */
+        #game {
+            display: grid;
+            grid-template-columns: repeat(4, 65px);
+            gap: 12px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .box {
+            width: 65px;
+            height: 65px;
+            background: #efaec8;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            cursor: pointer;
+            color: white;
+            user-select: none;
+        }
+
+        .box.open {
+            background: white;
+            color: #e98faf;
+        }
+
+        #memoryInfo {
+            margin-top: 15px;
+            font-size: 15px;
+        }
+
+        /* POPUP WIN & GREAT */
+        #win button, #great button {
+            background: #e99ab7;
+            color: white;
+            border: none;
+            box-shadow: 0 8px 20px #e99ab766;
+        }
+
+        /* GAME CATCH LOVE */
+        #loveGame {
+            position: relative;
+            height: 350px;
+            overflow: hidden;
+            margin-top: 20px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .love {
+            position: absolute;
+            top: -50px;
+            font-size: 45px;
+            cursor: pointer;
+            z-index: 10;
+            user-select: none;
+            animation: jatuh linear forwards;
+        }
+
+        @keyframes jatuh {
+            from {
+                top: -50px;
+            }
+            to {
+                top: 360px;
+            }
+        }
+
+        #loveInfo {
+            background: white;
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 30px;
+            box-shadow: 0 5px 15px #eab1c7;
+            font-weight: 600;
+        }
+
+        /* LOVE DRIVE STYLES */
+        #roadCanvas {
+            background: #555566;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            border: 4px solid #ffffff;
+            touch-action: none;
+            display: block;
+            margin: 10px auto;
+        }
+
+        .drive-controls {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .btn-drive {
+            width: 80px;
+            height: 50px;
+            font-size: 18px;
+            padding: 0;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8dbea;
+            color: #724159;
+            border: 2px solid #efaac5;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn-drive:active {
+            background: #e99ab7;
+            color: white;
+        }
+
+        /* WORD SEARCH GAME */
+        #wordTarget {
+            background: white;
+            padding: 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            margin: 15px 0;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        #wordGrid {
+            display: grid;
+            grid-template-columns: repeat(8, 38px);
+            gap: 6px;
+            justify-content: center;
+            margin-top: 15px;
+            touch-action: none;
+        }
+
+        .letter {
+            width: 38px;
+            height: 38px;
+            background: #f8dbea;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #8b5570;
+            user-select: none;
+        }
+
+        .letter.active {
+            background: #e99ab7;
+            color: white;
+        }
+
+        .letter.found {
+            background: #cfa3eb;
+            color: white;
+        }
+
+        /* LOVE QUIZ STYLES */
+        .quiz-option {
+            width: 100%;
+            margin: 8px 0;
+            padding: 12px 20px;
+            border-radius: 20px;
+            border: 2px solid #efaac5;
+            background: white;
+            color: #8b5570;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .quiz-option:hover {
+            background: #ffe6ef;
+            transform: translateX(4px);
+        }
+
+        #quizProgress {
+            font-size: 13px;
+            font-weight: 600;
+            color: #d77d9d;
+            margin-bottom: 10px;
+        }
+
+        #quizQuestion {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #724159;
+        }
+
+        /* MODAL POPUP */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.35);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            backdrop-filter: blur(4px);
+        }
+
+        .popup-card {
+            background: #ffffff;
+            width: min(85%, 380px);
+            padding: 35px 25px;
+            border-radius: 30px;
+            border: 4px solid #f1abc4;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            text-align: center;
+            animation: popupAnim 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popupAnim {
+            0% { transform: scale(0.7); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .popup-title {
+            font-family: 'Sacramento', cursive;
+            font-size: 52px;
+            color: #e28da9;
+            margin: 0;
+            line-height: 0.9;
+        }
+
+        .popup-subtitle {
+            font-family: 'Sacramento', cursive;
+            font-size: 48px;
+            color: #e28da9;
+            margin: 0 0 20px 0;
+            line-height: 1;
+        }
+
+        .popup-text {
+            font-size: 15px;
+            color: #6b5262;
+            line-height: 1.5;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .btn-modal {
+            border: 2px solid #efaac5;
+            background: #ffffff;
+            color: #df80a1;
+            border-radius: 25px;
+            padding: 10px 30px;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 4px 12px #efaac544;
+        }
+
+        #message {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- OPENING -->
+    <div class="card" id="start">
+        <h1>Hi, Mas Dimas!</h1>
+        <p>Aku punya sesuatu kecil untuk kamu</p>
+        <div class="heart">♡</div>
+        <button onclick="firstStart()">Main game yukk !!!</button>
+    </div>
+
+    <!-- GAME 1 MEMORY -->
+    <div class="card hidden" id="play">
+        <h2>Memory Game 🌸</h2>
+        <p>Cari pasangan emoji yang sama ya</p>
+        <div id="memoryInfo">
+            Cocok: 0/16<br>
+            Waktu: 02:00
+        </div>
+        <div id="game"></div>
+    </div>
+
+    <!-- POPUP MENANG MEMORY -->
+    <div class="card hidden" id="win">
+        <h1>You Won!</h1>
+        <p>
+            Hebat banget! Ingatan kamu<br>
+            ternyata kuat juga ya,<br>
+            sekuat perasaanku ke kamu, mwehehe 💗<br><br>
+            Ayo lanjut ke game berikutnya!
+        </p>
+        <button onclick="nextGame()">Next Game 🌸</button>
+    </div>
+
+    <!-- GAME 2 CATCH LOVE -->
+    <div class="card hidden" id="catch">
+        <h2>Tap to shoot my heart 💗</h2>
+        <div id="loveInfo">❤️ Hati: 0/15</div>
+        <div id="loveGame"></div>
+    </div>
+
+    <!-- POPUP GREAT JOB -->
+    <div class="card hidden" id="great">
+        <h1>Great Job! 💗</h1>
+        <p>
+            15 hati berhasil kamu kumpulkan!<br><br>
+            Tapi perjalanan belum selesai..
+        </p>
+        <button onclick="nextGameCar()">Next Game 🚗</button>
+    </div>
+
+    <!-- GAME LOVE DRIVE 🚗 -->
+    <div class="card hidden" id="carGame">
+        <h2>Love Drive 🚗💨</h2>
+        <p style="margin: 5px 0 10px;">Setir mobil ke hati aku! Kumpulkan 10 Hati 💖</p>
+        <div id="carInfo" style="font-weight: bold; color: #d77d9d;">Poin: 0 / 10</div>
+        <canvas id="roadCanvas" width="280" height="320"></canvas>
+        <div class="drive-controls">
+            <button class="btn-drive" id="leftBtn">◀️ Kiri</button>
+            <button class="btn-drive" id="rightBtn">Kanan ▶️</button>
+        </div>
+    </div>
+
+    <!-- POP-UP MODAL SETELAH LOVE DRIVE -->
+    <div class="modal-overlay hidden" id="winModalCar">
+        <div class="popup-card">
+            <div class="popup-title">Yeayy</div>
+            <div class="popup-subtitle">Keren Banget!</div>
+            <div class="popup-text">
+                Mas Dimas bisa nyetir sampai ke hati aku! 🚗💨💖<br><br>
+                Sekarang yuk lanjut ke permainan berikutnya!
+            </div>
+            <button class="btn-modal" onclick="goToWordGame()">Lanjut 💌</button>
+        </div>
+    </div>
+
+    <!-- GAME 3 WORD SEARCH -->
+    <div class="card hidden" id="wordGame">
+        <h2>Find My Words 💌</h2>
+        <p>
+            You make my days brighter and my heart happier.<br>
+            Thank you for being someone special in my life. ❤️
+        </p>
+        <p>Drag the letters to find the hidden words ✨</p>
+        <div id="wordTarget">
+            BRIGHTER • HAPPIER • HEART • SPECIAL • LIFE • YOU
+        </div>
+        <div id="wordGrid"></div>
+        <p id="wordStatus">0 / 6 words found 💗</p>
+    </div>
+
+    <!-- POP-UP MODAL SETELAH WORD SEARCH -->
+    <div class="modal-overlay hidden" id="winModalWord">
+        <div class="popup-card">
+            <div class="popup-title">Yeayy</div>
+            <div class="popup-subtitle">Berhasil!</div>
+            <div class="popup-text">
+                Pinter banget sih Mas Dimas bisa nemu semuanya! 🥳<br><br>
+                Lanjut ke tantangan Love Quiz dulu yuk!
+            </div>
+            <button class="btn-modal" onclick="goToQuiz()">Mulai Kuis 💘</button>
+        </div>
+    </div>
+
+    <!-- GAME 4 LOVE QUIZ -->
+    <div class="card hidden" id="quizGame">
+        <h2>Love Quiz 💘</h2>
+        <div id="quizProgress">Pertanyaan 1 dari 6</div>
+        <div id="quizQuestion">Loading...</div>
+        <div id="quizOptions"></div>
+    </div>
+
+    <!-- POP-UP MODAL SETELAH LOVE QUIZ -->
+    <div class="modal-overlay hidden" id="winModalQuiz">
+        <div class="popup-card">
+            <div class="popup-title">Yeayy</div>
+            <div class="popup-subtitle">Selesai!</div>
+            <div class="popup-text">
+                Semua pertanyaan kuis udah kamu jawab nih! 🥳Klik tombol di bawah untuk membuka hadiahnya! ✨
+            </div>
+            <button class="btn-modal" onclick="goToBookDrive()">Buka Buku 📖</button>
+        </div>
+    </div>
+
+    <!-- FINAL -->
+    <div class="card hidden" id="final">
+        <h1>For You 💗</h1>
+        <p id="message">
+            Terima kasih sudah bermain sampai akhir! ✨
+        </p>
+        <button onclick="goToBookDrive()" style="margin-top:10px;">Buka Buku 📖</button>
+        <br><br>
+        <button onclick="resetGame()" style="margin-top:10px;">Main Lagi 🔄</button>
+    </div>
+
+    <script>
+        const driveBookUrl = "https://drive.google.com/file/d/1KXGJxO2DfIDO2ZZOkZI8OBSd7z2Wh8Kv/view?usp=sharing";
+
+        function goToBookDrive() {
+            window.location.href = driveBookUrl;
+        }
+
+        function showSlide(slideId) {
+            document.querySelectorAll(".card").forEach(card => card.classList.add("hidden"));
+            let targetCard = document.getElementById(slideId);
+            if (targetCard) {
+                targetCard.classList.remove("hidden");
+                localStorage.setItem("loveGamePage", slideId);
+            }
+        }
+
+        function firstStart() {
+            localStorage.removeItem("loveGamePage");
+            startGame();
+        }
+
+        function resetGame() {
+            localStorage.clear();
+            document.getElementById("winModalCar").classList.add("hidden");
+            document.getElementById("winModalWord").classList.add("hidden");
+            document.getElementById("winModalQuiz").classList.add("hidden");
+            showSlide("start");
+        }
+
+        function goToWordGame() {
+            document.getElementById("winModalCar").classList.add("hidden");
+            nextGame3();
+        }
+
+        function goToQuiz() {
+            document.getElementById("winModalWord").classList.add("hidden");
+            showSlide("quizGame");
+            startQuiz();
+        }
+
+        function goToFinal() {
+            document.getElementById("winModalQuiz").classList.add("hidden");
+            goToBookDrive();
+        }
+
+        // ===============================
+        // GAME 1 : MEMORY CARD
+        // ===============================
+        let icons = [
+            "🌸","🍓","🍉","🍌",
+            "🌸","🍓","🍉","🍌",
+            "🌷","🍒","🌷","🍒",
+            "💗","⭐","💗","⭐"
+        ];
+
+        let first = null;
+        let lock = false;
+        let done = 0;
+        let memoryTime = 120;
+        let memoryTimer;
+        let gameOver = false;
+
+        function startGame() {
+            showSlide("play");
+
+            let g = document.getElementById("game");
+            g.innerHTML = "";
+
+            clearInterval(memoryTimer);
+            memoryTime = 120;
+            done = 0;
+            gameOver = false;
+            first = null;
+
+            document.getElementById("memoryInfo").innerHTML = "Cocok: 0/16<br>Waktu: 02:00";
+            memoryTimer = setInterval(countdownMemory, 1000);
+
+            let shuffled = [...icons].sort(() => Math.random() - 0.5);
+            shuffled.forEach(x => {
+                let b = document.createElement("div");
+                b.className = "box";
+                b.innerHTML = "🌸";
+                b.onclick = () => flip(b, x);
+                g.appendChild(b);
+            });
+        }
+
+        function countdownMemory() {
+            if (memoryTime <= 0) {
+                clearInterval(memoryTimer);
+                gameOver = true;
+                alert("Waktu habis 💔 Coba lagi ya");
+                return;
+            }
+
+            memoryTime--;
+            let menit = Math.floor(memoryTime / 60);
+            let detik = memoryTime % 60;
+
+            document.getElementById("memoryInfo").innerHTML = 
+                "Cocok: " + done + "/16<br>Waktu: " + 
+                String(menit).padStart(2, "0") + ":" + String(detik).padStart(2, "0");
+        }
+
+        function flip(b, x) {
+            if (gameOver || lock || b.classList.contains("open")) return;
+
+            b.innerHTML = x;
+            b.classList.add("open");
+
+            if (!first) {
+                first = { b, x };
+                return;
+            }
+
+            if (first.x === x) {
+                done += 2;
+                first = null;
+
+                let menit = Math.floor(memoryTime / 60);
+                let detik = memoryTime % 60;
+                document.getElementById("memoryInfo").innerHTML = 
+                    "Cocok: " + done + "/16<br>Waktu: " + 
+                    String(menit).padStart(2, "0") + ":" + String(detik).padStart(2, "0");
+
+                if (done === icons.length) {
+                    clearInterval(memoryTimer);
+                    setTimeout(() => {
+                        showSlide("win");
+                    }, 700);
+                }
+            } else {
+                lock = true;
+                setTimeout(() => {
+                    b.innerHTML = "🌸";
+                    first.b.innerHTML = "🌸";
+                    b.classList.remove("open");
+                    first.b.classList.remove("open");
+                    first = null;
+                    lock = false;
+                }, 700);
+            }
+        }
+
+        // ===============================
+        // NAVIGASI ANTAR GAME
+        // ===============================
+        function nextGame() {
+            showSlide("catch");
+            startLove();
+        }
+
+        function nextGameCar() {
+            showSlide("carGame");
+            startCarGame();
+        }
+
+        function nextGame3() {
+            showSlide("wordGame");
+            setTimeout(() => {
+                startWordGame();
+            }, 100);
+        }
+
+        // ===============================
+        // GAME 2 : CATCH LOVE
+        // ===============================
+        let loveCount = 0;
+        let loveTarget = 15;
+        let loveInterval;
+
+        function startLove() {
+            loveCount = 0;
+            document.getElementById("loveInfo").innerHTML = "❤️ Hati: 0/15";
+            document.getElementById("loveGame").innerHTML = "";
+
+            clearInterval(loveInterval);
+            loveInterval = setInterval(createLove, 700);
+        }
+
+        function createLove() {
+            if (loveCount >= loveTarget) {
+                clearInterval(loveInterval);
+                return;
+            }
+
+            let love = document.createElement("div");
+            love.className = "love";
+            love.innerHTML = "💗";
+            love.style.left = Math.random() * 80 + "%";
+            love.style.animationDuration = (4 + Math.random() * 2) + "s";
+
+            love.onclick = function(e) {
+                e.stopPropagation();
+                loveCount++;
+
+                document.getElementById("loveInfo").innerHTML = "💗 Hati: " + loveCount + "/15";
+                love.remove();
+
+                if (loveCount >= loveTarget) {
+                    clearInterval(loveInterval);
+                    setTimeout(() => {
+                        showSlide("great");
+                    }, 700);
+                }
+            };
+
+            document.getElementById("loveGame").appendChild(love);
+
+            setTimeout(() => {
+                if (love.parentNode) {
+                    love.remove();
+                }
+            }, 6000);
+        }
+
+        // ===============================
+        // GAME LOGIC : LOVE DRIVE 🚗 (HADAP KE DEPAN)
+        // ===============================
+        let carCanvas, carCtx;
+        let playerCar = { x: 125, y: 240, width: 30, height: 50 };
+        let items = [];
+        let carScore = 0;
+        let carGameActive = false;
+        let roadOffset = 0;
+        let carAnimId;
+
+        function startCarGame() {
+            carCanvas = document.getElementById("roadCanvas");
+            carCtx = carCanvas.getContext("2d");
+            carScore = 0;
+            playerCar.x = 125;
+            items = [];
+            carGameActive = true;
+            document.getElementById("carInfo").innerHTML = "Poin: 0 / 10";
+            document.getElementById("winModalCar").classList.add("hidden");
+
+            window.removeEventListener("keydown", handleCarKeyDown);
+            window.addEventListener("keydown", handleCarKeyDown);
+
+            let lBtn = document.getElementById("leftBtn");
+            let rBtn = document.getElementById("rightBtn");
+            lBtn.onpointerdown = () => { if (playerCar.x > 35) playerCar.x -= 25; };
+            rBtn.onpointerdown = () => { if (playerCar.x < 215) playerCar.x += 25; };
+
+            cancelAnimationFrame(carAnimId);
+            gameLoopCar();
+        }
+
+        function handleCarKeyDown(e) {
+            if (!carGameActive) return;
+            if (e.key === "ArrowLeft" && playerCar.x > 35) playerCar.x -= 20;
+            if (e.key === "ArrowRight" && playerCar.x < 215) playerCar.x += 20;
+        }
+
+        function drawForwardCar(x, y) {
+            carCtx.save();
+            
+            // Bayangan
+            carCtx.fillStyle = "rgba(0,0,0,0.2)";
+            carCtx.fillRect(x + 2, y + 4, 30, 48);
+
+            // Bodi Utama
+            carCtx.fillStyle = "#ff4d6d";
+            carCtx.beginPath();
+            carCtx.roundRect(x, y, 30, 48, 8);
+            carCtx.fill();
+
+            // Atap / Kaca Depan
+            carCtx.fillStyle = "#80ed99";
+            carCtx.beginPath();
+            carCtx.roundRect(x + 4, y + 12, 22, 16, 4);
+            carCtx.fill();
+
+            // Lampu Depan
+            carCtx.fillStyle = "#ffea00";
+            carCtx.fillRect(x + 3, y + 1, 6, 3);
+            carCtx.fillRect(x + 21, y + 1, 6, 3);
+
+            // Ban Depan & Belakang
+            carCtx.fillStyle = "#2b2d42";
+            carCtx.fillRect(x - 3, y + 6, 4, 10);
+            carCtx.fillRect(x + 29, y + 6, 4, 10);
+            carCtx.fillRect(x - 3, y + 32, 4, 10);
+            carCtx.fillRect(x + 29, y + 32, 4, 10);
+
+            carCtx.restore();
+        }
+
+        function gameLoopCar() {
+            if (!carGameActive) return;
+
+            // Gambar Jalanan Animasi
+            carCtx.fillStyle = "#555566";
+            carCtx.fillRect(0, 0, 280, 320);
+
+            carCtx.fillStyle = "#a8e6cf";
+            carCtx.fillRect(0, 0, 25, 320);
+            carCtx.fillRect(255, 0, 25, 320);
+
+            carCtx.strokeStyle = "#ffffff";
+            carCtx.lineWidth = 4;
+            carCtx.setLineDash([20, 15]);
+            carCtx.lineDashOffset = -roadOffset;
+            carCtx.beginPath();
+            carCtx.moveTo(140, 0);
+            carCtx.lineTo(140, 320);
+            carCtx.stroke();
+
+            roadOffset += 4;
+
+            // Gambar Mobil Vector Menghadap ke Depan
+            drawForwardCar(playerCar.x, playerCar.y);
+
+            // Spawn Hati & Rintangan
+            if (Math.random() < 0.03) {
+                let types = ["💖", "🌸", "⭐", "🛢️"];
+                let chosen = types[Math.floor(Math.random() * types.length)];
+                let randomX = 35 + Math.random() * 180;
+                items.push({ x: randomX, y: -30, type: chosen });
+            }
+
+            // Gerakkan Items
+            for (let i = items.length - 1; i >= 0; i--) {
+                let item = items[i];
+                item.y += 3.5;
+
+                carCtx.font = "26px sans-serif";
+                carCtx.fillText(item.type, item.x, item.y + 25);
+
+                // Cek Tabrakan
+                if (
+                    Math.abs(item.x - playerCar.x) < 28 &&
+                    Math.abs(item.y - playerCar.y) < 35
+                ) {
+                    if (item.type === "🛢️") {
+                        carScore = Math.max(0, carScore - 1);
+                    } else {
+                        carScore++;
+                    }
+                    document.getElementById("carInfo").innerHTML = "Poin: " + carScore + " / 10";
+                    items.splice(i, 1);
+
+                    // MENAMPILKAN POPUP MODAL SETELAH SELESAI
+                    if (carScore >= 10) {
+                        carGameActive = false;
+                        setTimeout(() => {
+                            document.getElementById("winModalCar").classList.remove("hidden");
+                        }, 400);
+                        return;
+                    }
+                    continue;
+                }
+
+                if (item.y > 330) {
+                    items.splice(i, 1);
+                }
+            }
+
+            carAnimId = requestAnimationFrame(gameLoopCar);
+        }
+
+        // ===============================
+        // GAME 3 : WORD SEARCH
+        // ===============================
+        let wordList = ["BRIGHTER", "HAPPIER", "HEART", "SPECIAL", "LIFE", "YOU"];
+        
+        let gridLetters = [
+            "B","R","I","G","H","T","E","R",
+            "H","A","P","P","I","E","R","X",
+            "E","Q","W","X","M","N","O","P",
+            "A","S","P","E","C","I","A","L",
+            "R","L","I","F","E","G","K","Z",
+            "T","O","U","B","I","V","P","Q",
+            "Y","O","U","S","E","O","M","E",
+            "W","L","K","J","R","G","F","D"
+        ];
+
+        let startBox = null;
+        let selectedBoxes = [];
+        let found = [];
+        let dragging = false;
+
+        function startWordGame() {
+            let grid = document.getElementById("wordGrid");
+            grid.innerHTML = "";
+            found = [];
+            document.getElementById("wordStatus").innerHTML = "0 / 6 words found 💗";
+            document.getElementById("winModalWord").classList.add("hidden");
+
+            gridLetters.forEach((letter, index) => {
+                let box = document.createElement("div");
+                box.className = "letter";
+                box.innerHTML = letter;
+                box.dataset.index = index;
+
+                box.addEventListener("pointerdown", handlePointerDown);
+                grid.appendChild(box);
+            });
+
+            document.removeEventListener("pointermove", handlePointerMove);
+            document.removeEventListener("pointerup", handlePointerUp);
+            document.addEventListener("pointermove", handlePointerMove);
+            document.addEventListener("pointerup", handlePointerUp);
+        }
+
+        function handlePointerDown(e) {
+            if (!e.target.classList.contains("letter")) return;
+            dragging = true;
+            startBox = e.target;
+            updateSelection(e.target);
+        }
+
+        function handlePointerMove(e) {
+            if (!dragging || !startBox) return;
+            let target = document.elementFromPoint(e.clientX, e.clientY);
+            if (target && target.classList.contains("letter")) {
+                updateSelection(target);
+            }
+        }
+
+        function updateSelection(currBox) {
+            document.querySelectorAll(".letter.active").forEach(el => el.classList.remove("active"));
+            selectedBoxes = [];
+
+            let r1 = Math.floor(parseInt(startBox.dataset.index) / 8);
+            let c1 = parseInt(startBox.dataset.index) % 8;
+            let r2 = Math.floor(parseInt(currBox.dataset.index) / 8);
+            let c2 = parseInt(currBox.dataset.index) % 8;
+
+            let dr = r2 - r1;
+            let dc = c2 - c1;
+
+            if (dr === 0 || dc === 0 || Math.abs(dr) === Math.abs(dc)) {
+                let stepR = dr === 0 ? 0 : dr / Math.abs(dr);
+                let stepC = dc === 0 ? 0 : dc / Math.abs(dc);
+
+                let steps = Math.max(Math.abs(dr), Math.abs(dc));
+                let allBoxes = document.querySelectorAll("#wordGrid .letter");
+
+                for (let i = 0; i <= steps; i++) {
+                    let currR = r1 + i * stepR;
+                    let currC = c1 + i * stepC;
+                    let idx = currR * 8 + currC;
+                    let box = allBoxes[idx];
+                    if (box) {
+                        selectedBoxes.push(box);
+                        box.classList.add("active");
+                    }
+                }
+            } else {
+                selectedBoxes = [startBox];
+                startBox.classList.add("active");
+            }
+        }
+
+        function handlePointerUp() {
+            if (!dragging) return;
+            dragging = false;
+
+            let word = selectedBoxes.map(x => x.innerHTML).join("");
+            let reverse = word.split("").reverse().join("");
+
+            if (wordList.includes(word) && !found.includes(word)) {
+                found.push(word);
+                selectedBoxes.forEach(x => {
+                    x.classList.remove("active");
+                    x.classList.add("found");
+                });
+            } else if (wordList.includes(reverse) && !found.includes(reverse)) {
+                found.push(reverse);
+                selectedBoxes.forEach(x => {
+                    x.classList.remove("active");
+                    x.classList.add("found");
+                });
+            } else {
+                selectedBoxes.forEach(x => x.classList.remove("active"));
+            }
+
+            document.getElementById("wordStatus").innerHTML = found.length + " / 6 words found 💗";
+
+            if (found.length === 6) {
+                setTimeout(() => {
+                    document.getElementById("winModalWord").classList.remove("hidden");
+                }, 600);
+            }
+
+            selectedBoxes = [];
+            startBox = null;
+        }
+
+        // ===============================
+        // GAME 4 : LOVE QUIZ
+        // ===============================
+        let quizData = [
+            {
+                question: "Siapa yang paling sering kangen duluan?",
+                options: ["Mas Dimas 😜", "Aku pastinya 💗", "Ngga Ada!"]
+            },
+            {
+                question: "Hal apa yang paling bikin gemes dari kamu?",
+                options: ["Senyum manisnya 😊", "Tingkah lucunya 🤪", "Semua yang ada di kamu ❤️"]
+            },
+            {
+                question: "Siapa nih yang hobi banget ngilang-ngilangan?",
+                options: ["Hanifah 😊", "Pastinya Hanifah 🤪", "Hanifah lagi hehe ❤️"]
+            },
+            {
+                question: "Kalau masalah paling sabar, siapa pemenangnya?",
+                options: ["Mas Dimas💗", "Mas Dimas lagi🤪", "Kamuuu pastinya!!!"]
+            },
+            {
+                question: "Tau gak bedanya Mas Dimas sama kipas angin?",
+                options: ["Kipas mendinginkan, Mas Dimas menghangatkan 🔥", "Kipas muter-muter, Mas Dimas menetap di hati 💖", "Dua-duanya sama-sama bikin adem! ✨"]
+            },
+            {
+                question: "Kira-kira rumah paling nyaman buat aku di mana coba?",
+                options: ["Di hatinya Mas Dimas 🏡❤️", "Di samping Mas Dimas selamanya 🥺", "Di mana aja asal bareng kamu! ✨"]
+            }
+        ];
+
+        let currentQuizIndex = 0;
+
+        function startQuiz() {
+            currentQuizIndex = 0;
+            document.getElementById("winModalQuiz").classList.add("hidden");
+            renderQuiz();
+        }
+
+        function renderQuiz() {
+            let q = quizData[currentQuizIndex];
+            document.getElementById("quizProgress").innerHTML = "Pertanyaan " + (currentQuizIndex + 1) + " dari " + quizData.length;
+            document.getElementById("quizQuestion").innerHTML = q.question;
+
+            let optionsContainer = document.getElementById("quizOptions");
+            optionsContainer.innerHTML = "";
+
+            q.options.forEach(opt => {
+                let btn = document.createElement("button");
+                btn.className = "quiz-option";
+                btn.innerHTML = opt;
+                btn.onclick = () => selectQuizAnswer();
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectQuizAnswer() {
+            currentQuizIndex++;
+            if (currentQuizIndex < quizData.length) {
+                renderQuiz();
+            } else {
+                setTimeout(() => {
+                    document.getElementById("winModalQuiz").classList.remove("hidden");
+                }, 300);
+            }
+        }  
+
+        // ===============================
+        // LOAD SLIDE TERAKHIR SAAT REFRESH
+        // ===============================
+        window.onload = function() {
+            let savedPage = localStorage.getItem("loveGamePage");
+
+            if (savedPage && savedPage !== "start") {
+                showSlide(savedPage);
+                if (savedPage === "play") startGame();
+                if (savedPage === "catch") startLove();
+                if (savedPage === "carGame") startCarGame();
+                if (savedPage === "wordGame") startWordGame();
+                if (savedPage === "quizGame") startQuiz();
+            } else {
+                showSlide("start");
+            }
+        };
+    </script>
+</body>
+</html>
